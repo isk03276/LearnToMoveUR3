@@ -48,6 +48,7 @@ class BaseEnv(gym.Env):
         return True if self.current_time_step >= self.max_time_step else False
     
     def reset(self):
+        self.current_time_step = 0
         self.env.stop()
         self.env.start()
         self.reset_objects()
