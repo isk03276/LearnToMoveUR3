@@ -1,0 +1,7 @@
+numpy
+
+# game env
+gym
+
+# ML
+ray[rllib]
