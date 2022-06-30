@@ -17,15 +17,19 @@ class BaseEnv(gym.Env):
         self.env.start()
         self.arm = None
         self.gripper = None
+        self.tip = None
         self.camera = VisionSensor("kinect_rgb")
         self.gripper_velocity = 0.2
         self._init_robot()
         self.observation_space = Box(0, 255, (84, 84, 3))
-        self.action_space = Box(-1., 1., (7,))
+        self.action_space = Box(-3.14, 3.14, (7,))
+        self.max_time_step = 300
+        self.current_time_step = 0
     
     def _init_robot(self):
         self.arm = UR3()
         self.gripper = Robotiq85Gripper()
+        self.tip = self.arm.get_tip()
         
     def get_obs(self):
         original_obs = self.camera.capture_rgb()
@@ -37,11 +41,11 @@ class BaseEnv(gym.Env):
     def get_reward(self):
         raise NotImplementedError
     
-    def get_done(self):
-        raise NotImplementedError
-    
     def reset_objects(self):
         raise NotImplementedError
+    
+    def get_done(self):
+        return True if self.current_time_step >= self.max_time_step else False
     
     def reset(self):
         self.env.stop()
@@ -54,6 +58,7 @@ class BaseEnv(gym.Env):
         return {}
     
     def step(self, action):
+        self.current_time_step += 1
         arm_control = action[:-1]
         gripper_control = action[-1]
         gripper_control = 1.0 if action[-1] > 0.5 else 0.0
