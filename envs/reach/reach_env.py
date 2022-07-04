@@ -1,4 +1,5 @@
 import random
+import math
 
 from envs.base_env import BaseEnv
 from utils.geometry import get_distance_between_two_pts
@@ -7,23 +8,23 @@ from pyrep.objects.shape import Shape
 
 
 class ReachEnv(BaseEnv):
-    def __init__(self, scene_file="envs/reach/reach.ttt", rendering=True):
-        super().__init__(scene_file, rendering)
+    def __init__(self, scene_file="envs/reach/reach.ttt", use_arm_camera:bool=False, rendering:bool=True):
+        super().__init__(scene_file, use_arm_camera, rendering)
         self.target = Shape("TargetPoint")
-        self.target_x_range = (0.1, 0.3)
+        self.target_x_range = (0.2, 0.4)
         self.target_y_range = (-0.2, 0.2)
-        self.target_z_range = (0.2, 0.4)
+        self.target_z_range = (0.4, 0.7)
         
         self.reach_threshold = 0.01
         
     def get_reward(self):
-        return 1 if self._get_distance_between_tip_and_target() <= self.reach_threshold else 0
+        distance_between_tip_and_target = self._get_distance_between_tip_and_target()
+        if distance_between_tip_and_target <= self.reach_threshold:
+            return 1
+        return -math.log10(distance_between_tip_and_target/100+1)
     
     def get_done(self):
-        done = super().get_done()
-        if done:
-            return done
-        return True if self._get_distance_between_tip_and_target() <= self.reach_threshold else False
+        return super().get_done()
         
     def reset_objects(self):
         self._reset_target()
