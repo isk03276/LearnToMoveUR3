@@ -1,7 +1,8 @@
 import cv2
 import numpy as np
 
-def resize_image(image:np.ndarray, width:int, height:int)-> np.ndarray:
+
+def resize_image(image: np.ndarray, width: int, height: int) -> np.ndarray:
     """
     Resize a image.
     Args:

@@ -4,7 +4,7 @@ import numpy as np
 from ray.rllib.agents.trainer import Trainer
 
 
-def make_folder_name()-> str:
+def make_folder_name() -> str:
     """
     Generate current time as string.
     Returns:
@@ -15,7 +15,7 @@ def make_folder_name()-> str:
     return curr_time
 
 
-def make_initial_hidden_state(lstm_cell_size:int)-> list:
+def make_initial_hidden_state(lstm_cell_size: int) -> list:
     """
     Make initial hidden state for testing lstm-based policy network.
     Args:
@@ -26,8 +26,9 @@ def make_initial_hidden_state(lstm_cell_size:int)-> list:
     """
     hidden_state = [np.zeros(lstm_cell_size), np.zeros(lstm_cell_size)]
     return hidden_state
-    
-def save_model(trainer:Trainer, path_to_save:str):
+
+
+def save_model(trainer: Trainer, path_to_save: str):
     """
     Save trained model.
     Args:
@@ -35,7 +36,8 @@ def save_model(trainer:Trainer, path_to_save:str):
     """
     trainer.save(path_to_save)
 
-def load_model(trainer:Trainer, path_to_load:str):
+
+def load_model(trainer: Trainer, path_to_load: str):
     """
     Load trained model.
     Args:

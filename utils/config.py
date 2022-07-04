@@ -1,7 +1,7 @@
 import yaml
 
 
-def load_config(config_file:str)-> dict:
+def load_config(config_file: str) -> dict:
     """
     Load a config file.
 
@@ -11,7 +11,6 @@ def load_config(config_file:str)-> dict:
     Returns:
         (dict): loaded config infoes
     """
-    with open(config_file, 'r') as f:
+    with open(config_file, "r") as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
-    return config    
-    
+    return config
