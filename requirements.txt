@@ -1,6 +1,5 @@
 numpy
 
-# game env
 gym
 
 # ML
@@ -14,3 +13,4 @@ black==22.1.0
 
 #ML framework
 torch==1.10.0
+tensorboard==2.8.0
