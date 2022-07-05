@@ -1,11 +1,11 @@
 import argparse
-import datetime
 
 from utils.rllib import (
     load_model,
-    save_model,
     make_initial_hidden_state,
-    make_folder_name,
+    get_logger_creator,
+    make_logging_folder,
+    save_model,
 )
 from utils.config import load_config
 
@@ -22,9 +22,7 @@ def get_env_generator(env_id: str):
     return env_generator
 
 
-def train(trainer, learning_iteration_num, to_save, save_interval):
-    path_to_save = "checkpoints/" + make_folder_name()
-
+def train(trainer, learning_iteration_num, path_to_save, save_interval):
     status = "[Train] {:2d} reward {:6.2f} len {:4.2f}"
 
     for iter in range(1, learning_iteration_num + 1):
@@ -34,7 +32,7 @@ def train(trainer, learning_iteration_num, to_save, save_interval):
                 iter, result["episode_reward_mean"], result["episode_len_mean"],
             )
         )
-        if to_save and iter % save_interval == 0:
+        if iter % save_interval == 0:
             save_model(trainer, path_to_save)
 
 
@@ -65,13 +63,16 @@ def run(args):
     env_generator = get_env_generator(env_id)
     tune.register_env(env_id, lambda _: env_generator(rendering=args.render))
     rllib_configs = load_config(args.config_file_path)
-    trainer = ppo.PPOTrainer(env=env_id, config=rllib_configs)
+    logdir = make_logging_folder(root_dir="checkpoints/", env_id=env_id, is_test=args.test)
+    logger_creator = get_logger_creator(logdir=logdir)
+    trainer = ppo.PPOTrainer(env=env_id, config=rllib_configs, logger_creator=logger_creator)
 
     if args.load_from is not None:
         load_model(trainer, args.load_from)
 
-    if not args.test:
-        train(trainer, args.learning_iteration_num, args.save, args.save_interval)
+    if not args.test: #train
+        train(trainer, args.learning_iteration_num, logdir, args.save_interval)
+        
     test_env = env_generator(rendering=True)
     test(test_env, trainer, args.test_num)
 
@@ -91,7 +92,6 @@ if __name__ == "__main__":
     )
     parser.add_argument("--render", action="store_true", help="Turn on rendering")
     # model
-    parser.add_argument("--save", action="store_true", help="Whether to save the model")
     parser.add_argument(
         "--save-interval", type=int, default=20, help="Model save interval"
     )
