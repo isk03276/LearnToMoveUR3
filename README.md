@@ -17,14 +17,12 @@ PyRep requires version **4.1(other versions may have bugs)** of CoppeliaSim. Dow
 - [Ubuntu 18.04](https://www.coppeliarobotics.com/files/CoppeliaSim_Edu_V4_1_0_Ubuntu18_04.tar.xz)
 - [Ubuntu 20.04](https://www.coppeliarobotics.com/files/CoppeliaSim_Edu_V4_1_0_Ubuntu20_04.tar.xz)
 
-We use python script in the coppeliaSim for manipulate robot, objects, etc.
-So you have to set python path in the CoppeliaSim
+Add the following to your *~/.bashrc* file: (__NOTE__: the 'EDIT ME' in the first line)  
 ```bash
-cd EDIT/ME/PATH/TO/COPPELIASIM/INSTALL/DIR/system
-gedit usrset.txt
+export COPPELIASIM_ROOT=EDIT/ME/PATH/TO/COPPELIASIM/INSTALL/DIR
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$COPPELIASIM_ROOT
+export QT_QPA_PLATFORM_PLUGIN_PATH=$COPPELIASIM_ROOT
 ```
-Find "defaultPython = " then fill in your python path.
-(ex. in my case -> defaultPython = "/home/eunjin/anaconda3/envs/ur3/bin/python3")
 
 #### PyRep
 
@@ -37,28 +35,29 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-Add the following to your *~/.bashrc* file: (__NOTE__: the 'EDIT ME' in the first line)
-
-```bash
-export COPPELIASIM_ROOT=EDIT/ME/PATH/TO/COPPELIASIM/INSTALL/DIR
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$COPPELIASIM_ROOT
-export QT_QPA_PLATFORM_PLUGIN_PATH=$COPPELIASIM_ROOT
-```
-
-__Remember to source your bashrc (`source ~/.bashrc`) or 
+Remember to source your bashrc (`source ~/.bashrc`) or 
 zshrc (`source ~/.zshrc`) after this.
 
 
-#### Requirements
-Finally install the python library:
+#### Requirements (this repo)
+Move to workspace  
+Clone repo and Install the python library:
 ```bash
+git clone https://github.com/isk03276/LearnToMoveUR3.git
+cd LearnToMoveUR3
 pip install -r requirements.txt
 ```
 
 
 ## Getting Started
+```bash
+python main.py --env-id ENV_ID --load-from MODEL_CHECKPOINT_PATH #Train
+python main.py --env-id reach --test --load-from MODEL_CHECKPOINT_PATH #Test
+```
 
 
-
-## Usage
+## Use Pretrained Model
+```bash
+python main.py --env-id reach --load-from pretrained_models/reach --test
+```
 
