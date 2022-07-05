@@ -1,4 +1,4 @@
-# CoppeliaSimUR3
+# UR3-Deep-Reinforcement-Learning
 
 You will be able to learn various tasks of the UR3 with robotiq85 gripper robot.  
 Learning method is based on the DRL(Deep Reinforcement Learning).  
