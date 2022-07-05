@@ -27,7 +27,7 @@ export QT_QPA_PLATFORM_PLUGIN_PATH=$COPPELIASIM_ROOT
 #### PyRep
 
 Once you have downloaded and set CoppeliaSim, you can install PyRep:
-
+Move to home workspace
 ```bash
 git clone https://github.com/stepjam/PyRep.git
 cd PyRep
@@ -39,8 +39,8 @@ Remember to source your bashrc (`source ~/.bashrc`) or
 zshrc (`source ~/.zshrc`) after this.
 
 
-#### Requirements (this repo)
-Move to workspace  
+#### LearnToMoveUR3
+Move to home workspace
 Clone repo and Install the python library:
 ```bash
 git clone https://github.com/isk03276/LearnToMoveUR3.git
