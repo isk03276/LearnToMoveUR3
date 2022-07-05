@@ -29,7 +29,9 @@ def train(trainer, learning_iteration_num, path_to_save, save_interval):
         result = trainer.train()
         print(
             status.format(
-                iter, result["episode_reward_mean"], result["episode_len_mean"],
+                iter,
+                result["episode_reward_mean"],
+                result["episode_len_mean"],
             )
         )
         if iter % save_interval == 0:
@@ -61,8 +63,12 @@ def run(args):
     ray.init()
     env_id = args.env_id
     env_generator = get_env_generator(env_id)
-    tune.register_env(env_id, lambda _: env_generator(rendering=args.render))
     rllib_configs = load_config(args.config_file_path)
+    use_arm_camera = rllib_configs["env_config"]["use_arm_camera"]
+    tune.register_env(
+        env_id,
+        lambda _: env_generator(rendering=args.render, use_arm_camera=use_arm_camera),
+    )
     logdir = make_logging_folder(
         root_dir="checkpoints/", env_id=env_id, is_test=args.test
     )

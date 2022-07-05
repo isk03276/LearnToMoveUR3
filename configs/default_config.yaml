@@ -2,6 +2,7 @@ env : {}
 env_config:
   #Numer of skipping in env, default: 1
   skip: 1
+  use_arm_camera: False
 model:
   vf_share_layers: true
   use_lstm: true
