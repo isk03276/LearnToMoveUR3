@@ -63,16 +63,20 @@ def run(args):
     env_generator = get_env_generator(env_id)
     tune.register_env(env_id, lambda _: env_generator(rendering=args.render))
     rllib_configs = load_config(args.config_file_path)
-    logdir = make_logging_folder(root_dir="checkpoints/", env_id=env_id, is_test=args.test)
+    logdir = make_logging_folder(
+        root_dir="checkpoints/", env_id=env_id, is_test=args.test
+    )
     logger_creator = get_logger_creator(logdir=logdir)
-    trainer = ppo.PPOTrainer(env=env_id, config=rllib_configs, logger_creator=logger_creator)
+    trainer = ppo.PPOTrainer(
+        env=env_id, config=rllib_configs, logger_creator=logger_creator
+    )
 
     if args.load_from is not None:
         load_model(trainer, args.load_from)
 
-    if not args.test: #train
+    if not args.test:  # train
         train(trainer, args.learning_iteration_num, logdir, args.save_interval)
-        
+
     test_env = env_generator(rendering=True)
     test(test_env, trainer, args.test_num)
 

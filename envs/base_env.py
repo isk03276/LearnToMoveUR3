@@ -1,4 +1,5 @@
 from utils.image import resize_image
+from utils.geometry import get_distance_between_two_pts
 
 import gym
 from gym.spaces import Box
@@ -25,8 +26,13 @@ class BaseEnv(gym.Env):
         self.arm_camera = VisionSensor("arm_camera_rgb")
         self.gripper_velocity = 0.2
         self._init_robot()
+
         self.max_time_step = 300
         self.current_time_step = 0
+
+        # for the agent to keep the goal states
+        self.max_consecutive_visit_to_goal = 5
+        self.cur_consecutive_visit_to_goal = 0
 
         channel_num = 6 if use_arm_camera else 3
         self.observation_space = Box(0, 255, (84, 84, channel_num))
@@ -53,11 +59,25 @@ class BaseEnv(gym.Env):
     def reset_objects(self):
         raise NotImplementedError
 
+    def is_goal_state(self):
+        raise NotImplementedError
+
     def get_done(self):
+        return self.time_over() | self.is_success()
+
+    def is_success(self):
+        if self.is_goal_state():
+            self.cur_consecutive_visit_to_goal += 1
+        else:
+            self.cur_consecutive_visit_to_goal = 0
+        return self.cur_consecutive_visit_to_goal >= self.max_consecutive_visit_to_goal
+
+    def time_over(self):
         return True if self.current_time_step >= self.max_time_step else False
 
     def reset(self):
         self.current_time_step = 0
+        self.cur_consecutive_visit_to_goal = 0
         self.env.stop()
         self.env.start()
         self.arm.set_control_loop_enabled(False)
@@ -82,3 +102,6 @@ class BaseEnv(gym.Env):
     def close(self):
         self.env.stop()
         self.env.shutdown()
+
+    def get_distance_from_tip(self, object_position):
+        return get_distance_between_two_pts(self.tip.get_position(), object_position)
