@@ -19,13 +19,13 @@ class ReachEnv(BaseEnv):
         self.target_y_range = (-0.2, 0.2)
         self.target_z_range = (0.4, 0.7)
 
-        self.reach_threshold = 0.01
+        self.reach_threshold = 0.05
 
     def get_reward(self):
         distance_between_tip_and_target = self.get_distance_from_tip(
             self.target.get_position()
         )
-        return -math.log10(distance_between_tip_and_target / 100 + 1)
+        return -math.log10(distance_between_tip_and_target / 10 + 1)
 
     def reset_objects(self):
         random_point_x = random.uniform(self.target_x_range[0], self.target_x_range[1])
