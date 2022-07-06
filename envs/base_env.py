@@ -62,8 +62,9 @@ class BaseEnv(gym.Env):
     def is_goal_state(self):
         raise NotImplementedError
 
-    def get_done(self):
-        return self.time_over() | self.is_success()
+    def get_done_and_info(self):
+        is_success = self.is_success()
+        return self.time_over() | is_success, {"success": is_success}
 
     def is_success(self):
         if self.is_goal_state():
@@ -86,9 +87,6 @@ class BaseEnv(gym.Env):
         self.env.step()
         return self.get_obs()
 
-    def get_info(self):
-        return {}
-
     def step(self, action):
         self.current_time_step += 1
         arm_control = action[:-1]
@@ -97,7 +95,8 @@ class BaseEnv(gym.Env):
         self.arm.set_joint_target_velocities(arm_control)
         self.gripper.actuate(gripper_control, self.gripper_velocity)
         self.env.step()
-        return self.get_obs(), self.get_reward(), self.get_done(), self.get_info()
+        done, info = self.get_done_and_info()
+        return self.get_obs(), self.get_reward(), done, info
 
     def close(self):
         self.env.stop()

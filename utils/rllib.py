@@ -6,6 +6,7 @@ from typing import Callable
 import numpy as np
 from ray.rllib.agents.trainer import Trainer
 from ray.tune.logger import UnifiedLogger
+from ray.rllib.agents.callbacks import DefaultCallbacks
 
 
 def get_current_time() -> str:
@@ -84,3 +85,14 @@ def get_logger_creator(logdir: str) -> Callable:
         return UnifiedLogger(config, logdir, loggers=None)
 
     return logger_creator
+
+
+class CustomLogCallback(DefaultCallbacks):
+    """
+    LogCallback based on Rllib callbacks for add 'success' custom metric.
+    """
+
+    def on_episode_end(self, *, episode, **kwargs):
+        """On episode end, add success custom metric."""
+        info = episode.last_info_for()
+        episode.custom_metrics["success"] = int(info["success"])

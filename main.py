@@ -6,6 +6,7 @@ from utils.rllib import (
     get_logger_creator,
     make_logging_folder,
     save_model,
+    CustomLogCallback,
 )
 from utils.config import load_config
 
@@ -22,20 +23,26 @@ def get_env_generator(env_id: str):
     return env_generator
 
 
-def train(trainer, learning_iteration_num, path_to_save, save_interval):
-    status = "[Train] {:2d} reward {:6.2f} len {:4.2f}"
+def train(trainer, target_success_mean, path_to_save, save_interval):
+    status = "[Train] {:2d} reward {:6.2f} len {:6.2f} success mean {:6.2f}"
 
-    for iter in range(1, learning_iteration_num + 1):
+    iteration = 0
+    while True:
         result = trainer.train()
+        success_mean = result["custom_metrics"]["success_mean"]
         print(
             status.format(
-                iter,
+                iteration,
                 result["episode_reward_mean"],
                 result["episode_len_mean"],
+                success_mean,
             )
         )
-        if iter % save_interval == 0:
+        iteration += 1
+        if iteration % save_interval == 0:
             save_model(trainer, path_to_save)
+        if success_mean >= target_success_mean:
+            break
 
 
 def test(env, trainer, test_num):
@@ -45,18 +52,28 @@ def test(env, trainer, test_num):
         done = False
         obs = env.reset()
         rews = []
+        success_list = []
         if use_lstm:
             hidden_state = make_initial_hidden_state(lstm_cell_size)
 
-        status = "[Test] {:2d} reward {:6.2f} len {:4.2f}"
+        status = "[Test] {:2d} reward {:6.2f} len {:6.2f}, success mean {:6.2f}"
+        
         while not done:
             if use_lstm:
                 action, hidden_state, _ = trainer.compute_action(obs, hidden_state)
             else:
                 action = trainer.compute_action(obs)
-            obs, rew, done, _ = env.step(action)
+            obs, rew, done, info = env.step(action)
             rews.append(rew)
-        print(status.format(ep + 1, sum(rews) / len(rews), len(rews)))
+        success_list.append(int(info["success"]))
+        print(
+            status.format(
+                ep + 1,
+                sum(rews) / len(rews),
+                len(rews),
+                sum(success_list) / len(success_list),
+            )
+        )
 
 
 def run(args):
@@ -64,6 +81,7 @@ def run(args):
     env_id = args.env_id
     env_generator = get_env_generator(env_id)
     rllib_configs = load_config(args.config_file_path)
+    rllib_configs["callbacks"] = CustomLogCallback
     use_arm_camera = rllib_configs["env_config"]["use_arm_camera"]
     tune.register_env(
         env_id,
@@ -81,7 +99,7 @@ def run(args):
         load_model(trainer, args.load_from)
 
     if not args.test:  # train
-        train(trainer, args.learning_iteration_num, logdir, args.save_interval)
+        train(trainer, args.target_success_mean, logdir, args.save_interval)
 
     test_env = env_generator(rendering=True, use_arm_camera=use_arm_camera)
     test(test_env, trainer, args.test_num)
@@ -108,10 +126,10 @@ if __name__ == "__main__":
     parser.add_argument("--load-from", type=str, help="Path to load the model")
     # train/test
     parser.add_argument(
-        "--learning-iteration-num",
-        type=int,
-        default=100000,
-        help="Number of iteration to train the model",
+        "--target-success-mean",
+        type=float,
+        default=0.99,
+        help="Learning ends when the current success mean is higher than ther target success mean",
     )
     parser.add_argument("--test", action="store_true", help="Whether to test the model")
     parser.add_argument(
