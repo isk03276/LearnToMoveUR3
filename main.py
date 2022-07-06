@@ -48,11 +48,11 @@ def train(trainer, target_success_mean, path_to_save, save_interval):
 def test(env, trainer, test_num):
     use_lstm = trainer.config.get("model").get("use_lstm")
     lstm_cell_size = trainer.config.get("model").get("lstm_cell_size")
+    success_list = []
     for ep in range(test_num):
         done = False
         obs = env.reset()
         rews = []
-        success_list = []
         if use_lstm:
             hidden_state = make_initial_hidden_state(lstm_cell_size)
 
