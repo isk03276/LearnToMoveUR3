@@ -83,7 +83,7 @@ def run(args):
     if not args.test:  # train
         train(trainer, args.learning_iteration_num, logdir, args.save_interval)
 
-    test_env = env_generator(rendering=True)
+    test_env = env_generator(rendering=True, use_arm_camera=use_arm_camera)
     test(test_env, trainer, args.test_num)
 
     ray.shutdown()
