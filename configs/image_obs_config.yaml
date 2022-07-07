@@ -1,29 +1,32 @@
 env : {}
 env_config:
   #Numer of skipping in env, default: 1
-  skip: 1
-  use_arm_camera: True
-model:
-  vf_share_layers: false
-  use_lstm: true
-  # Whether to feed a_{t-1} to LSTM (one-hot encoded if discrete).
-  lstm_use_prev_action: false
-  lstm_cell_size: 256
-# Whether to clip actions to the action space's low/high range spec.
-clip_actions: true
-num_gpus: 1
-num_workers: 8
-framework: torch
-lambda: 0.95
-kl_coeff: 0.5
-clip_rewards: false
-clip_param: 0.1
-vf_clip_param: 10.0
-entropy_coeff: 0.01
-train_batch_size: 5000
-rollout_fragment_length: 100
-sgd_minibatch_size: 500
-num_sgd_iter: 10
-observation_filter: NoFilter
-# Whether to rollout "complete_episodes" or "truncate_episodes".
-batch_mode: complete_episodes
+  observation:
+    use_image_observation: true
+    use_arm_camera: true
+
+rllib:
+  model:
+    vf_share_layers: false
+    use_lstm: true
+    # Whether to feed a_{t-1} to LSTM (one-hot encoded if discrete).
+    lstm_use_prev_action: false
+    lstm_cell_size: 256
+  # Whether to clip actions to the action space's low/high range spec.
+  clip_actions: true
+  num_gpus: 1
+  num_workers: 8
+  framework: torch
+  lambda: 0.95
+  kl_coeff: 0.5
+  clip_rewards: false
+  clip_param: 0.1
+  vf_clip_param: 10.0
+  entropy_coeff: 0.01
+  train_batch_size: 5000
+  rollout_fragment_length: 100
+  sgd_minibatch_size: 500
+  num_sgd_iter: 10
+  observation_filter: NoFilter
+  # Whether to rollout "complete_episodes" or "truncate_episodes".
+  batch_mode: complete_episodes

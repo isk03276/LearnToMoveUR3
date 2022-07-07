@@ -82,7 +82,7 @@ def run(args):
     env_generator = get_env_generator(env_id)
     rllib_configs = load_config(args.config_file_path)
     rllib_configs["callbacks"] = CustomLogCallback
-    use_arm_camera = rllib_configs["env_config"]["use_arm_camera"]
+    env_config = rllib_configs["env_config"]
     tune.register_env(
         env_id,
         lambda _: env_generator(rendering=args.render, use_arm_camera=use_arm_camera),
