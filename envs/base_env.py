@@ -1,6 +1,5 @@
 from typing import Tuple, List
 
-from utils.image import resize_image
 from utils.geometry import get_distance_between_two_pts
 
 import gym
@@ -101,13 +100,10 @@ class BaseEnv(gym.Env):
         Returns:
             np.ndarray: image observation
         """
-        width = self.observation_space.shape[0]
-        height = self.observation_space.shape[1]
         obs = self.third_view_camera.capture_rgb()
         if self.use_arm_camera:
             first_view_image = self.arm_camera.capture_rgb()
             obs = np.concatenate((obs, first_view_image), axis=2)
-        obs = resize_image(obs, width, height)
         return obs
 
     def get_done_and_info(self) -> Tuple[bool, dict]:
@@ -136,7 +132,7 @@ class BaseEnv(gym.Env):
 
     def time_over(self) -> bool:
         """
-        Whether the episode is progressing beyond the set maximum time step. 
+        Whether the episode is progressing beyond the set maximum time step.
         Returns:
             (bool) : if timestep is overed, then return True
         """

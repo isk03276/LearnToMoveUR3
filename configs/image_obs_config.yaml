@@ -1,9 +1,7 @@
 env : {}
 env_config:
-  #Numer of skipping in env, default: 1
-  observation:
-    use_image_observation: true
-    use_arm_camera: true
+  use_image_observation: true
+  use_arm_camera: true
 
 rllib:
   model:
