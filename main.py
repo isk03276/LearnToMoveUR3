@@ -8,7 +8,7 @@ from utils.rllib import (
     save_model,
     CustomLogCallback,
 )
-from utils.config import load_config
+from utils.config import load_config, save_config
 from envs.wrappers import ImageObsWrapper
 
 import ray
@@ -85,6 +85,7 @@ def run(args):
     # load rllib config
     ray.init()
     configs = load_config(args.config_file_path)
+    configs_to_save = configs.copy()
     rllib_configs = configs["rllib"]
     rllib_configs["callbacks"] = CustomLogCallback
 
@@ -98,14 +99,14 @@ def run(args):
         "rendering": False if args.test else args.render,
     }
     tune.register_env(
-        env_id,
-        lambda _: make_env(**env_args),
+        env_id, lambda _: make_env(**env_args),
     )
 
     # logging setting
     logdir = make_logging_folder(
         root_dir="checkpoints/", env_id=env_id, is_test=args.test
     )
+    save_config(configs_to_save, logdir + "/config.yaml")
     logger_creator = get_logger_creator(logdir=logdir)
 
     # rllib trainer setting
