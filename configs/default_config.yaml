@@ -5,7 +5,7 @@ env_config:
 
 rllib:
   # Whether to clip actions to the action space's low/high range spec.
-  clip_actions: false
+  clip_actions: true
   num_gpus: 0
   num_workers: 4
   framework: torch
