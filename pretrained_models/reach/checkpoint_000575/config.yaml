@@ -1,0 +1,22 @@
+env: {}
+env_config:
+  use_arm_camera: false
+  use_image_observation: false
+rllib:
+  batch_mode: complete_episodes
+  callbacks: !!python/name:utils.rllib.CustomLogCallback ''
+  clip_actions: true
+  clip_param: 0.1
+  clip_rewards: false
+  entropy_coeff: 0.01
+  framework: torch
+  kl_coeff: 0.5
+  lambda: 0.95
+  num_gpus: 1
+  num_sgd_iter: 10
+  num_workers: 8
+  observation_filter: NoFilter
+  rollout_fragment_length: 100
+  sgd_minibatch_size: 500
+  train_batch_size: 5000
+  vf_clip_param: 10.0

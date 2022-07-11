@@ -47,6 +47,7 @@ def train(trainer, target_success_mean, path_to_save, save_interval):
         if iteration % save_interval == 0:
             save_model(trainer, path_to_save)
         if success_mean >= target_success_mean:
+            save_model(trainer, path_to_save)
             break
 
 
