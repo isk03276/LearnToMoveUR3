@@ -22,8 +22,8 @@ class ReachEnv(BaseEnv):
     ):
         super().__init__(scene_file, use_arm_camera, rendering)
         self.target = Shape("TargetPoint")
-        self.target_x_range = (-0.3, 0.3)
-        self.target_y_range = (-0.3, 0.3)
+        self.target_x_range = (-0.35, 0.35)
+        self.target_y_range = (-0.35, 0.35)
         self.target_z_range = (0.05, 0.5)
         self.min_distance_from_base = 0.2
 
@@ -70,8 +70,8 @@ class ReachEnv(BaseEnv):
             random_point_y = random.uniform(self.target_y_range[0], self.target_y_range[1])
             random_point_z = random.uniform(self.target_z_range[0], self.target_z_range[1])
             return np.array([random_point_x, random_point_y, random_point_z])
-        distance = float("inf")
-        while distance > self.min_distance_from_base:
+        distance = float("-inf")
+        while distance < self.min_distance_from_base:
             random_point = get_random_point()
             distance = get_distance_between_two_pts(np.zeros(2), random_point[:2])
         self.target.set_position(list(random_point))
