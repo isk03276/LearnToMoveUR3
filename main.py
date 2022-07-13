@@ -100,7 +100,8 @@ def run(args):
         "rendering": False if args.test else args.render,
     }
     tune.register_env(
-        env_id, lambda _: make_env(**env_args),
+        env_id,
+        lambda _: make_env(**env_args),
     )
 
     # logging setting
