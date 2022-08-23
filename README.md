@@ -4,7 +4,6 @@ You will be able to learn various tasks of the UR3 with robotiq85 gripper robot.
 Learning method is based on the DRL(Deep Reinforcement Learning).  
 In this repo, we use [CoppeliaSim](http://www.coppeliarobotics.com/) (previously called V-REP), [Pyrep](https://github.com/stepjam/PyRep).  
 Tasks  
-- Supported games : Tetris(gym-tetris)  
 - DRL framework : rllib 
 - Supported tasks
 
