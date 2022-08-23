@@ -13,7 +13,8 @@ Tasks
   |TO DO|-|-|
 
 ## Install
-We assume python >= 3.7.9  
+This repo was tested with Python 3.7.9 version.
+
 #### Coppeliasim
 PyRep requires version **4.1(other versions may have bugs)** of CoppeliaSim. Download: 
 - [Ubuntu 16.04](https://www.coppeliarobotics.com/files/CoppeliaSim_Edu_V4_1_0_Ubuntu16_04.tar.xz)
